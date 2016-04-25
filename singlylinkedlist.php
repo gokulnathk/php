@@ -47,6 +47,22 @@ Class SinglyLinkedList {
     }
     
     /**
+     * Check the list is empty
+     * @return boolean True on success false on failure
+     */
+    public function isEmpty() {
+        return ($this->firstNode == NULL);
+    }
+    
+    /**
+     * Get the size of the list (No.of Nodes)
+     * @return integer No.of nodes in the list
+     */
+    public function getListSize() {
+        return $this->count;
+    }
+    
+    /**
      * Insert a node to the list at first
      * @param INode $node Node object to be inserted
      */
@@ -82,7 +98,7 @@ Class SinglyLinkedList {
      * @param mixed $key node value to be searched
      * @return INode|NULL return the node if found else NULL
      */
-    public function find($key) {
+    public function searchList($key) {
         $current = $this->firstNode;
         // loop through the list until finding the required value
         while ($current->data != $key) {
@@ -93,6 +109,27 @@ Class SinglyLinkedList {
         }
         return $current;
     }
+    
+    /**
+     * Read a node at a specified position
+     * @param integer $position position of the node to be read
+     * @return mixed node data if found else return NULL
+     */
+    public function getNode($position) {
+        // check the position is within the list length
+        if ($position <= $this->count) {
+            $current = $this->firstNode;
+            $pos = 1;
+            // loop through the node until reach the position value
+            while ($pos != $position) {
+                $current = $current->next;
+                $pos++;
+            }
+            return $current->data;
+        } else {
+            return NULL;
+        }
+    }        
     
     /**
      * Delete the node present in at front of the list
@@ -141,5 +178,38 @@ Class SinglyLinkedList {
             }
             return $current;
         }        
+    }
+    
+    
+    public function deleteNode($key) {
+        
+        $current = $previous = $this->firstNode;
+        // loop through until find the node
+        while ($current->data != $key) {
+            // if current node is last one and didn't find the key return NULL, since the specified node doesn't exist
+            if ($current->next === NULL) {
+                return NULL;                
+            } else {
+                // get the next set of nodes
+                $previous = $current;
+                $current = $current->next;
+            }            
+        }
+        // if the searched node is first in the list
+        if ($current == $this->firstNode) {
+            // set the next node as first
+            $this->firstNode = $this->firstNode->next;
+            // if list has only one node set last node as newly updated first (i.e., NULL, since next of the first node will be NULL if it is the only node in the list)
+            if ($this->count === 1) {
+                $this->lastNode = $this->firstNode;
+            }
+        } else {
+            // if the searching node is last one, change previous node as last
+            if ($current == $this->lastNode)
+                $this->lastNode = $previous;
+            // update the previous node's next property with current node's next to remove the current node from list
+            $previous->next = $current->next;
+        }
+        $this->count--;
     }
 }
